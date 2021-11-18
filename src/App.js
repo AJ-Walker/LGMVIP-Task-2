@@ -1,24 +1,33 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import axios from 'axios';
 import './App.css';
 
-function App() {
+import UserCard from './components/UserCard';
+
+const App = () => {
+
+  const [userData,setUserData] = useState([]);
+  const [isLoading,setLoading] = useState(false);
+  const [isData, setData] = useState(false);
+
+  const handleClick = async() => {
+    const res = await axios.get('https://reqres.in/api/users?page=1')
+    const data = res.data.data
+    
+    setUserData(data)
+    setLoading(true);
+    setData(true);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <div className="container dark">
+        <nav className="navbar">
+        <h1 className="navbar-brand">Userbase</h1>
+        <button className="btn" onClick={handleClick}>Get Users</button>
+        </nav>
+          {isData ? null : <h1 className="title">Please click on <span>Get Users</span> button above to render the user data.</h1>}
+          <UserCard isLoading={isLoading} setLoading={setLoading} userdata={userData} />
+      </div>
   );
 }
 
